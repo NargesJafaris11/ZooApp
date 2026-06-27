@@ -27,7 +27,8 @@
             <td>@animal.Species</td>
             <td>@animal.Age</td>
             <td>
-                <a asp-action="Details" asp-route-id="@animal.Id">Details</a>
+                <a asp-action="Details" asp-route-id="@animal.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@animal.Id">Edit</a>
             </td>
         </tr>
     }

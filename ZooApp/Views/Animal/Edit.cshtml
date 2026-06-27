@@ -1,0 +1,28 @@
+@model ZooApp.Models.Animal
+
+<h1>Dier aanpassen</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Species"></label>
+        <input asp-for="Species" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Age"></label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Opslaan</button>
+</form>
+
+<br />
+
+<a asp-action="Index">Terug</a>

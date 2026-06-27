@@ -42,4 +42,33 @@ public class AnimalController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+    
+    public IActionResult Edit(int id)
+    {
+        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+
+        if (animal == null)
+        {
+            return NotFound();
+        }
+
+        return View(animal);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(Animal animal)
+    {
+        Animal? existingAnimal = animals.FirstOrDefault(a => a.Id == animal.Id);
+
+        if (existingAnimal == null)
+        {
+            return NotFound();
+        }
+
+        existingAnimal.Name = animal.Name;
+        existingAnimal.Species = animal.Species;
+        existingAnimal.Age = animal.Age;
+
+        return RedirectToAction(nameof(Index));
+    }
 }
