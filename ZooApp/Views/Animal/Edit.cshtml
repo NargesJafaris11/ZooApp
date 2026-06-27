@@ -20,6 +20,13 @@
         <input asp-for="Age" class="form-control" />
     </div>
 
+    <div class="mb-3">
+        <label asp-for="CategoryId"></label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+            <option value="">-- Geen categorie --</option>
+        </select>
+    </div>
+
     <button type="submit" class="btn btn-success">Opslaan</button>
 </form>
 

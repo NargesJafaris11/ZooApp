@@ -1,30 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ZooApp.Data;
 using ZooApp.Models;
+using ZooApp.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ZooApp.Controllers;
 
 public class AnimalController : Controller
 {
-    private readonly ZooDbContext _context;
+    private readonly IAnimalService _animalService;
 
-    public AnimalController(ZooDbContext context)
+    public AnimalController(IAnimalService animalService)
     {
-        _context = context;
+        _animalService = animalService;
     }
+
     public IActionResult Index()
     {
-        List<Animal> animals = _context.Animals
-            .Include(a => a.Category)
-            .ToList();
+        List<Animal> animals = _animalService.GetAll();
 
         return View(animals);
     }
 
     public IActionResult Details(int id)
     {
-        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _animalService.GetById(id);
 
         if (animal == null)
         {
@@ -33,34 +32,49 @@ public class AnimalController : Controller
 
         return View(animal);
     }
-
     public IActionResult Create()
     {
+        ViewBag.Categories = new SelectList(
+            _animalService.GetCategories(),
+            "Id",
+            "Name");
+
         return View();
     }
-
+    
     [HttpPost]
     public IActionResult Create(Animal animal)
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Categories = new SelectList(
+                _animalService.GetCategories(),
+                "Id",
+                "Name",
+                animal.CategoryId);
+
             return View(animal);
         }
 
-        _context.Animals.Add(animal);
-        _context.SaveChanges();
+        _animalService.Add(animal);
 
         return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Edit(int id)
     {
-        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _animalService.GetById(id);
 
         if (animal == null)
         {
             return NotFound();
         }
+
+        ViewBag.Categories = new SelectList(
+            _animalService.GetCategories(),
+            "Id",
+            "Name",
+            animal.CategoryId);
 
         return View(animal);
     }
@@ -70,18 +84,23 @@ public class AnimalController : Controller
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Categories = new SelectList(
+                _animalService.GetCategories(),
+                "Id",
+                "Name",
+                animal.CategoryId);
+
             return View(animal);
         }
 
-        _context.Animals.Update(animal);
-        _context.SaveChanges();
+        _animalService.Update(animal);
 
         return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Delete(int id)
     {
-        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _animalService.GetById(id);
 
         if (animal == null)
         {
@@ -94,13 +113,7 @@ public class AnimalController : Controller
     [HttpPost]
     public IActionResult DeleteConfirmed(int id)
     {
-        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
-
-        if (animal != null)
-        {
-            _context.Animals.Remove(animal);
-            _context.SaveChanges();
-        }
+        _animalService.Delete(id);
 
         return RedirectToAction(nameof(Index));
     }

@@ -1,10 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using ZooApp.Data;
+using ZooApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Database
 builder.Services.AddDbContext<ZooDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ZooDatabase")));
-// Add services to the container.
+
+// Services
+builder.Services.AddScoped<IAnimalService, AnimalService>();
+
+// MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -13,7 +20,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -25,9 +31,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Seed database
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ZooDbContext>();
