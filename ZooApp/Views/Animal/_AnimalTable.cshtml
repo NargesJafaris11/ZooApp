@@ -1,0 +1,35 @@
+@model List<ZooApp.Models.Animal>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Species</th>
+        <th>Age</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach (var animal in Model)
+    {
+        <tr>
+            <td>@animal.Id</td>
+            <td>@animal.Name</td>
+            <td>@animal.Species</td>
+            <td>@animal.Age</td>
+            <td>@animal.Category?.Name</td>
+
+            <td>
+                <a asp-action="Details" asp-route-id="@animal.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@animal.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@animal.Id">Delete</a>
+            </td>
+        </tr>
+    }
+
+    </tbody>
+</table>
