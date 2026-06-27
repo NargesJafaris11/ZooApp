@@ -1,35 +1,56 @@
 @model ZooApp.Models.Animal
 
-<h1>Dier aanpassen</h1>
+@{
+    ViewData["Title"] = "Edit Animal";
+}
+
+<h1>Edit Animal</h1>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+
+    <input asp-for="Id" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Name"></label>
+        <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Species"></label>
+        <label asp-for="Species" class="form-label"></label>
         <input asp-for="Species" class="form-control" />
+        <span asp-validation-for="Species" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Age"></label>
+        <label asp-for="Age" class="form-label"></label>
         <input asp-for="Age" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="CategoryId"></label>
-        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
-            <option value="">-- Geen categorie --</option>
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+            <option value="">-- Select a category --</option>
         </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">Opslaan</button>
+    <button type="submit" class="btn btn-primary">
+        Save
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Cancel
+    </a>
+
 </form>
 
-<br />
-
-<a asp-action="Index">Terug</a>
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
