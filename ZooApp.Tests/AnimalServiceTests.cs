@@ -1,14 +1,34 @@
+using Microsoft.EntityFrameworkCore;
+using ZooApp.Data;
+using ZooApp.Models;
+using ZooApp.Services;
+
 namespace ZooApp.Tests;
 
 public class AnimalServiceTests
 {
-    [Fact]
-    public void TestProject_ShouldRunTestSuccessfully()
+    private static ZooDbContext CreateContext()
     {
-        int expected = 4;
+        DbContextOptions<ZooDbContext> options = new DbContextOptionsBuilder<ZooDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        return new ZooDbContext(options);
+    }
+
+    [Fact]
+    public void GetAll_ShouldReturnAllAnimals()
+    {
+        ZooDbContext context = CreateContext();
+
+        context.Animals.Add(new Animal { Name = "Simba", Species = "Lion", Age = 5 });
+        context.Animals.Add(new Animal { Name = "Dumbo", Species = "Elephant", Age = 12 });
+        context.SaveChanges();
+
+        AnimalService service = new AnimalService(context);
         
-        int actual = 2 + 2;
+        List<Animal> animals = service.GetAll();
         
-        Assert.Equal(expected, actual);
+        Assert.Equal(2, animals.Count);
     }
 }
