@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ZooApp.Data;
 using ZooApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ZooApp.Controllers;
 
@@ -12,10 +14,13 @@ public class AnimalController : Controller
     {
         _context = context;
     }
-
     public IActionResult Index()
     {
-        return View(_context.Animals.ToList());
+        List<Animal> animals = _context.Animals
+            .Include(a => a.Category)
+            .ToList();
+
+        return View(animals);
     }
 
     public IActionResult Details(int id)
