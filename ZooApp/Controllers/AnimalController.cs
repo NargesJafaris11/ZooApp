@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooApp.Data;
 using ZooApp.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ZooApp.Controllers;
 
