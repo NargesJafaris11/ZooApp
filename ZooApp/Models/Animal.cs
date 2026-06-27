@@ -9,4 +9,11 @@ public class Animal
     public string Species { get; set; } = "";
 
     public int Age { get; set; }
+    
+    // Foreign Key
+    public int? CategoryId { get; set; }
+    
+    
+    // Navigation Property
+    public Category? Category { get; set; }
 }

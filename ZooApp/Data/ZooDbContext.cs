@@ -11,4 +11,6 @@ public class ZooDbContext : DbContext
     }
 
     public DbSet<Animal> Animals { get; set; }
+
+    public DbSet<Category> Categories { get; set; }
 }
