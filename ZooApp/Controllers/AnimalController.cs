@@ -71,4 +71,29 @@ public class AnimalController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+    
+    public IActionResult Delete(int id)
+    {
+        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+
+        if (animal == null)
+        {
+            return NotFound();
+        }
+
+        return View(animal);
+    }
+
+    [HttpPost]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+
+        if (animal != null)
+        {
+            animals.Remove(animal);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }
