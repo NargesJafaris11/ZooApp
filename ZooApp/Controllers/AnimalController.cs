@@ -1,25 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using ZooApp.Data;
 using ZooApp.Models;
 
 namespace ZooApp.Controllers;
 
 public class AnimalController : Controller
 {
-    private static List<Animal> animals = new()
+    private readonly ZooDbContext _context;
+
+    public AnimalController(ZooDbContext context)
     {
-        new Animal { Id = 1, Name = "Simba", Species = "Lion", Age = 5 },
-        new Animal { Id = 2, Name = "Dumbo", Species = "Elephant", Age = 12 },
-        new Animal { Id = 3, Name = "Melman", Species = "Giraffe", Age = 7 }
-    };
+        _context = context;
+    }
 
     public IActionResult Index()
     {
-        return View(animals);
+        return View(_context.Animals.ToList());
     }
 
     public IActionResult Details(int id)
     {
-        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
 
         if (animal == null)
         {
@@ -37,15 +38,20 @@ public class AnimalController : Controller
     [HttpPost]
     public IActionResult Create(Animal animal)
     {
-        animal.Id = animals.Max(a => a.Id) + 1;
-        animals.Add(animal);
+        if (!ModelState.IsValid)
+        {
+            return View(animal);
+        }
+
+        _context.Animals.Add(animal);
+        _context.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }
-    
+
     public IActionResult Edit(int id)
     {
-        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
 
         if (animal == null)
         {
@@ -58,23 +64,20 @@ public class AnimalController : Controller
     [HttpPost]
     public IActionResult Edit(Animal animal)
     {
-        Animal? existingAnimal = animals.FirstOrDefault(a => a.Id == animal.Id);
-
-        if (existingAnimal == null)
+        if (!ModelState.IsValid)
         {
-            return NotFound();
+            return View(animal);
         }
 
-        existingAnimal.Name = animal.Name;
-        existingAnimal.Species = animal.Species;
-        existingAnimal.Age = animal.Age;
+        _context.Animals.Update(animal);
+        _context.SaveChanges();
 
         return RedirectToAction(nameof(Index));
     }
-    
+
     public IActionResult Delete(int id)
     {
-        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
 
         if (animal == null)
         {
@@ -87,11 +90,12 @@ public class AnimalController : Controller
     [HttpPost]
     public IActionResult DeleteConfirmed(int id)
     {
-        Animal? animal = animals.FirstOrDefault(a => a.Id == id);
+        Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
 
         if (animal != null)
         {
-            animals.Remove(animal);
+            _context.Animals.Remove(animal);
+            _context.SaveChanges();
         }
 
         return RedirectToAction(nameof(Index));
