@@ -12,4 +12,5 @@ public interface IAnimalService
     void Add(Animal animal);
     void Update(Animal animal);
     void Delete(int id);
+    
 }

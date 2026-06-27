@@ -14,9 +14,36 @@ public class AnimalController : Controller
         _animalService = animalService;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string? searchString, int? categoryId, string? sortOrder)
     {
         List<Animal> animals = _animalService.GetAll();
+
+        ViewBag.Categories = _animalService.GetCategories();
+        ViewBag.CurrentSearch = searchString;
+        ViewBag.CurrentCategoryId = categoryId;
+        ViewBag.CurrentSortOrder = sortOrder;
+
+        if (!string.IsNullOrWhiteSpace(searchString))
+        {
+            animals = animals
+                .Where(a => a.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (categoryId.HasValue)
+        {
+            animals = animals
+                .Where(a => a.CategoryId == categoryId.Value)
+                .ToList();
+        }
+
+        animals = sortOrder switch
+        {
+            "name_desc" => animals.OrderByDescending(a => a.Name).ToList(),
+            "age_asc" => animals.OrderBy(a => a.Age).ToList(),
+            "age_desc" => animals.OrderByDescending(a => a.Age).ToList(),
+            _ => animals.OrderBy(a => a.Name).ToList()
+        };
 
         return View(animals);
     }
