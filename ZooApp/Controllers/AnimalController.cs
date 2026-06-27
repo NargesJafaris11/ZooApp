@@ -35,4 +35,15 @@ public class AnimalController : Controller
 
         return View(animal);
     }
+    
+    public IActionResult Create()
+    {
+        return View();
+    }
+    
+    [HttpPost]
+    public IActionResult Create(Animal animal)
+    {
+        return RedirectToAction(nameof(Index));
+    }
 }
