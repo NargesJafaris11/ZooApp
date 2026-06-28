@@ -18,6 +18,7 @@ public class Animal
     public int Age { get; set; }
 
     // Foreign Key
+    [Required(ErrorMessage = "Category is required.")]
     public int? CategoryId { get; set; }
 
     // Navigation Property
