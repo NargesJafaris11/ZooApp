@@ -33,7 +33,7 @@
     <div class="mb-3">
         <label asp-for="CategoryId" class="form-label"></label>
         <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
-            <option value="">-- Select a category --</option>
+            <option value="">Select a category...</option>
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
@@ -43,7 +43,7 @@
     </button>
 
     <a asp-action="Index" class="btn btn-secondary">
-        Cancel
+        Back to List
     </a>
 
 </form>

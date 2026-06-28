@@ -1,11 +1,31 @@
 @model ZooApp.Models.Animal
 
+@{
+    ViewData["Title"] = "Animal Details";
+}
+
 <h1>Animal Details</h1>
 
-<p><strong>Id:</strong> @Model.Id</p>
-<p><strong>Name:</strong> @Model.Name</p>
-<p><strong>Species:</strong> @Model.Species</p>
-<p><strong>Age:</strong> @Model.Age</p>
-<p><strong>Category:</strong> @Model.Category?.Name</p>
+<div class="mb-3">
+    <strong>Id:</strong> @Model.Id
+</div>
 
-<a asp-action="Index">Back to list</a>
+<div class="mb-3">
+    <strong>Name:</strong> @Model.Name
+</div>
+
+<div class="mb-3">
+    <strong>Species:</strong> @Model.Species
+</div>
+
+<div class="mb-3">
+    <strong>Age:</strong> @Model.Age
+</div>
+
+<div class="mb-3">
+    <strong>Category:</strong> @Model.Category?.Name
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">
+    Back to List
+</a>
