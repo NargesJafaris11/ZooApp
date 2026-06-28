@@ -13,4 +13,6 @@ public interface IAnimalService
     void Update(Animal animal);
     void Delete(int id);
     
+    List<Animal> SearchFilterAndSort(string? searchString, int? categoryId, string? sortOrder);
+    
 }

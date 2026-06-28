@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ZooApp.Models;
 using ZooApp.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ZooApp.Controllers;
 
@@ -16,34 +16,15 @@ public class AnimalController : Controller
 
     public IActionResult Index(string? searchString, int? categoryId, string? sortOrder)
     {
-        List<Animal> animals = _animalService.GetAll();
-
         ViewBag.Categories = _animalService.GetCategories();
         ViewBag.CurrentSearch = searchString;
         ViewBag.CurrentCategoryId = categoryId;
         ViewBag.CurrentSortOrder = sortOrder;
 
-        if (!string.IsNullOrWhiteSpace(searchString))
-        {
-            animals = animals
-                .Where(a => a.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        if (categoryId.HasValue)
-        {
-            animals = animals
-                .Where(a => a.CategoryId == categoryId.Value)
-                .ToList();
-        }
-
-        animals = sortOrder switch
-        {
-            "name_desc" => animals.OrderByDescending(a => a.Name).ToList(),
-            "age_asc" => animals.OrderBy(a => a.Age).ToList(),
-            "age_desc" => animals.OrderByDescending(a => a.Age).ToList(),
-            _ => animals.OrderBy(a => a.Name).ToList()
-        };
+        List<Animal> animals = _animalService.SearchFilterAndSort(
+            searchString,
+            categoryId,
+            sortOrder);
 
         return View(animals);
     }
@@ -59,6 +40,7 @@ public class AnimalController : Controller
 
         return View(animal);
     }
+
     public IActionResult Create()
     {
         ViewBag.Categories = new SelectList(
@@ -68,7 +50,7 @@ public class AnimalController : Controller
 
         return View();
     }
-    
+
     [HttpPost]
     public IActionResult Create(Animal animal)
     {
