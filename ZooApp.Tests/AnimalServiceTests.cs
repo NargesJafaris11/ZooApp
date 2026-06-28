@@ -15,9 +15,23 @@ public class AnimalServiceTests
 
         return new ZooDbContext(options);
     }
+
     private static AnimalService CreateService(ZooDbContext context)
     {
         return new AnimalService(context, new FakeLoggerService());
+    }
+
+    private static Category CreateCategory(ZooDbContext context)
+    {
+        Category category = new Category
+        {
+            Name = "Mammal"
+        };
+
+        context.Categories.Add(category);
+        context.SaveChanges();
+
+        return category;
     }
 
     [Fact]
@@ -25,44 +39,65 @@ public class AnimalServiceTests
     {
         ZooDbContext context = CreateContext();
 
-        context.Animals.Add(new Animal { Name = "Simba", Species = "Lion", Age = 5 });
-        context.Animals.Add(new Animal { Name = "Dumbo", Species = "Elephant", Age = 12 });
+        Category category = CreateCategory(context);
+
+        context.Animals.Add(new Animal
+        {
+            Name = "Simba",
+            Species = "Lion",
+            Age = 5,
+            CategoryId = category.Id
+        });
+
+        context.Animals.Add(new Animal
+        {
+            Name = "Dumbo",
+            Species = "Elephant",
+            Age = 12,
+            CategoryId = category.Id
+        });
+
         context.SaveChanges();
 
         AnimalService service = CreateService(context);
-        
+
         List<Animal> animals = service.GetAll();
-        
+
         Assert.Equal(2, animals.Count);
     }
-    
+
     [Fact]
     public void GetById_ShouldReturnAnimal_WhenAnimalExists()
     {
         ZooDbContext context = CreateContext();
 
+        Category category = CreateCategory(context);
+
         Animal animal = new Animal
         {
             Name = "Simba",
             Species = "Lion",
-            Age = 5
+            Age = 5,
+            CategoryId = category.Id
         };
 
         context.Animals.Add(animal);
         context.SaveChanges();
 
         AnimalService service = CreateService(context);
-        
+
         Animal? result = service.GetById(animal.Id);
-        
+
         Assert.NotNull(result);
         Assert.Equal("Simba", result.Name);
     }
-    
+
     [Fact]
     public void Add_ShouldAddAnimalToDatabase()
     {
         ZooDbContext context = CreateContext();
+
+        Category category = CreateCategory(context);
 
         AnimalService service = CreateService(context);
 
@@ -70,60 +105,67 @@ public class AnimalServiceTests
         {
             Name = "Alex",
             Species = "Lion",
-            Age = 8
+            Age = 8,
+            CategoryId = category.Id
         };
-        
+
         service.Add(animal);
-        
+
         Assert.Equal(1, context.Animals.Count());
     }
-    
+
     [Fact]
     public void Delete_ShouldRemoveAnimalFromDatabase()
     {
         ZooDbContext context = CreateContext();
 
+        Category category = CreateCategory(context);
+
         Animal animal = new Animal
         {
             Name = "Dumbo",
             Species = "Elephant",
-            Age = 12
+            Age = 12,
+            CategoryId = category.Id
         };
 
         context.Animals.Add(animal);
         context.SaveChanges();
 
         AnimalService service = CreateService(context);
-        
+
         service.Delete(animal.Id);
-        
+
         Assert.Empty(context.Animals);
     }
-    
+
     [Fact]
     public void Update_ShouldUpdateAnimal()
     {
         ZooDbContext context = CreateContext();
 
+        Category category = CreateCategory(context);
+
         Animal animal = new Animal
         {
             Name = "Simba",
             Species = "Lion",
-            Age = 5
+            Age = 5,
+            CategoryId = category.Id
         };
 
         context.Animals.Add(animal);
         context.SaveChanges();
 
         AnimalService service = CreateService(context);
-        
-        animal.Age = 8;
+
         animal.Name = "King Simba";
+        animal.Age = 8;
 
         service.Update(animal);
 
         Animal? updatedAnimal = context.Animals.Find(animal.Id);
-        
+
         Assert.NotNull(updatedAnimal);
         Assert.Equal("King Simba", updatedAnimal.Name);
         Assert.Equal(8, updatedAnimal.Age);
