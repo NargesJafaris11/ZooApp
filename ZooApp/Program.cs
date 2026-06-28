@@ -10,6 +10,7 @@ builder.Services.AddDbContext<ZooDbContext>(options =>
 
 // Services
 builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddScoped<ILoggerService, ConsoleLoggerService>();
 
 // MVC
 builder.Services.AddControllersWithViews();

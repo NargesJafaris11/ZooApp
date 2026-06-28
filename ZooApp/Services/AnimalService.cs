@@ -7,10 +7,12 @@ namespace ZooApp.Services;
 public class AnimalService : IAnimalService
 {
     private readonly ZooDbContext _context;
+    private readonly ILoggerService _logger;
 
-    public AnimalService(ZooDbContext context)
+    public AnimalService(ZooDbContext context, ILoggerService logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public List<Animal> GetAll()
@@ -31,14 +33,18 @@ public class AnimalService : IAnimalService
     {
         _context.Animals.Add(animal);
         _context.SaveChanges();
+        
+        _logger.Log($"Animal added: {animal.Name}");
     }
 
     public void Update(Animal animal)
     {
         _context.Animals.Update(animal);
         _context.SaveChanges();
+        
+        _logger.Log($"Animal updated: {animal.Name}");
     }
-
+    
     public void Delete(int id)
     {
         Animal? animal = _context.Animals.Find(id);
@@ -47,6 +53,8 @@ public class AnimalService : IAnimalService
         {
             _context.Animals.Remove(animal);
             _context.SaveChanges();
+
+            _logger.Log($"Animal deleted: {animal.Name}");
         }
     }
     
